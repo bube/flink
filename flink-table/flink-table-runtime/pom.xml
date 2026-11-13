@@ -105,6 +105,21 @@ under the License.
 			<optional>${flink.markBundledAsOptional}</optional>
 		</dependency>
 
+		<!-- flink-shaded-jsonpath does not bundle json-smart, but JSON path filters need it.
+			asm is only used to map JSON into beans, which Flink does not do. -->
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<version>2.6.0</version>
+			<optional>${flink.markBundledAsOptional}</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>org.ow2.asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<!-- Test dependencies -->
 
 		<dependency>
@@ -183,11 +198,19 @@ under the License.
 							<artifactSet>
 								<includes combine.children="append">
 									<include>org.apache.flink:flink-shaded-jsonpath</include>
+									<include>net.minidev:json-smart</include>
+									<include>net.minidev:accessors-smart</include>
 									<include>org.codehaus.janino:*</include>
 									<include>org.apache.flink:flink-table-code-splitter</include>
 									<include>org.apache.flink:flink-table-type-utils</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>net.minidev</pattern>
+									<shadedPattern>org.apache.flink.table.shaded.net.minidev</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>

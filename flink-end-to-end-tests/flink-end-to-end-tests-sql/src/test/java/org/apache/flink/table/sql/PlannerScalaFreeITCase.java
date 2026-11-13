@@ -76,6 +76,12 @@ class PlannerScalaFreeITCase extends SqlITCaseBase {
         runAndCheckSQL("watermark_push_down_e2e.sql", Arrays.asList("+I[Bob, 1]", "+I[Alice, 2]"));
     }
 
+    /** JSON path filters need json-smart, which flink-table-runtime must bundle. */
+    @TestTemplate
+    void testJsonPathFilter() throws Exception {
+        runAndCheckSQL("json_path_filter_e2e.sql", Collections.singletonList("+I[[\"a\"], 1]"));
+    }
+
     @Override
     List<String> formatRawResult(List<String> rawResult) {
         return convertToMaterializedResult(rawResult, SINK_TABLE_SCHEMA, DESERIALIZATION_SCHEMA);
